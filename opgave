@@ -1,0 +1,451 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.IO;
+using System.ComponentModel.DataAnnotations; 
+
+
+namespace ConsoleApp6
+{
+    class Program
+    {
+        static string brugerinput { get; set; }
+        
+
+        //static string FilNavn { get; set; }
+
+        static void Main(string[] args)
+        {
+            //EVT velkomstbesked som skriver hvor filen er gemt
+           
+            for (; ; )
+            {
+                Menu();
+                //If løkke som giver fejl hvis forkert bokstav er tastet
+
+                if (brugerinput == "o" || brugerinput == "O")                       //Hvis der tastes o/O beynder programmet at oprette en ny bruger
+                {
+
+                    NyBruger();
+                    
+                    
+                }
+
+                if (brugerinput == "q" || brugerinput == "Q")                       //Hvis der tastes q/Q afslutter programmer
+                {
+                    System.Environment.Exit(1);
+                }
+
+                if (brugerinput == "f" || brugerinput == "F")                       //Hvis der tastes f/F beynder programmet at søge efter bruger
+                {
+                    findbruger();
+                }
+
+                if (brugerinput == "v" || brugerinput == "V")                       //Hvis der tastes v/V beynder programmet at vise alle brugere
+                {
+                    VisAlle();
+                }
+                else
+                {
+                    //string fejlbesked = "Ugyldig komando indtastet, tryk en" +      //Hvis der tastes en ugyldig kommando
+                    //    " vilkårlig tast for at starte igen";
+                    //Console.SetCursorPosition(0, 3);
+                    //Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) +
+                    //    (fejlbesked.Length / 2)) + "}", fejlbesked));
+                    //Console.ReadKey();
+                }
+
+            }
+
+
+
+
+
+
+        }
+
+
+        public static string Skub(int count)
+        {
+            return "".PadLeft(count);
+        }
+        
+        public static void SletRestLinje()
+        {
+            int currentLeft = Console.CursorLeft;
+            int currentTop = Console.CursorTop;
+            Console.Write(new String(' ', Console.WindowWidth - currentLeft));
+            Console.SetCursorPosition(currentLeft, currentTop);
+        }
+
+        public static string StorStart(string value)
+        {
+            char[] array = value.ToCharArray();
+            // Handle the first letter in the string.  
+            if (array.Length >= 1)
+            {
+                if (char.IsLower(array[0]))
+                {
+                    array[0] = char.ToUpper(array[0]);
+                }
+            }
+            // Scan through the letters, checking for spaces.  
+            // ... Uppercase the lowercase letters following spaces.  
+            for (int i = 1; i < array.Length; i++)
+            {
+                if (array[i - 1] == ' ')
+                {
+                    if (char.IsLower(array[i]))
+                    {
+                        array[i] = char.ToUpper(array[i]);
+                    }
+                }
+            }
+            return new string(array);
+        }
+
+        public static void ClearLine()
+        {
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.WindowWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+        }
+
+        static void VisAlle()
+        {
+            
+            int x = 0, i=0;
+            string[] brugere = File.ReadAllLines("c:\\filer\\Database.dat");
+            do
+            {
+                Console.Clear();
+
+
+
+                
+                Console.SetCursorPosition(0, 2);
+                Console.WriteLine(Skub(7) + "Der er {0} brugere\n" + Skub(5)+
+                     "Der vises nu {1} til {2}\n"+ "#", brugere.Length, x + 1, x + 15);
+
+                for ( i = x; i <= x + 14; i++)
+                {
+
+                    if (i < brugere.Length)
+                    {
+
+                        Console.WriteLine(i+1+Skub(4)+brugere[i]);
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Den sidste bruger er vist, tryk for en tast for at retunere");
+                        break;
+                    }
+                }
+                Console.SetCursorPosition(0, 24);
+                Console.Write(Skub(7)+"Tast en vilkårlig tast for at fortsætte");
+                x = x + 15;
+                Console.ReadKey();
+            } while (x <= brugere.Length );
+        }
+
+        static void Menu()
+        {
+            Console.Clear();
+
+
+
+
+            //Opstartsteksten til programmet
+            string velkommenbesked = "<<<   Carsten Mørch Information Systems - Gæste-registrering  v1.0  >>>";
+            Console.SetCursorPosition(0, 1);
+            Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (velkommenbesked.Length / 2)) + "}", velkommenbesked));
+
+            // opbygning af velkomstskærm
+            //Lav dette om til array og do løkke
+            Console.SetCursorPosition(0, 5);
+            Console.WriteLine(Skub(5) + String.Format("{0,-10}  {1,-10} ", "Telefon nr", ":"));
+            Console.WriteLine(Skub(5) + String.Format("{0,-10}  {1,-10} ", "Navn", ":"));
+            Console.WriteLine(Skub(5) + String.Format("{0,-10}  {1,-10} ", "Adresse", ":"));
+            Console.WriteLine(Skub(5) + String.Format("{0,-10}  {1,-10} ", "Postnr", ":"));
+            Console.WriteLine(Skub(5) + String.Format("{0,-10}  {1,-10} ", "By", ":"));
+            Console.WriteLine(Skub(5) + String.Format("{0,-10}  {1,-10} ", "Email", ":"));
+
+            Console.SetCursorPosition(0, 20);
+            Console.WriteLine(Skub(5) + " [O] Opret   [F] Find   [V] Vis alle   [Q] Afslut :");
+            Console.SetCursorPosition(0, 22);
+            Console.Write(Skub(7) + "vælg funktion: ");
+
+            //Her læses brugeren valg
+            brugerinput = Console.ReadLine();
+
+            //Her behandles brugeres valg
+
+            //Her oprettes ny bruger
+
+            //if (input == "o" || input == "O")
+            //{
+
+            //    NyBruger();
+            //}
+
+        }
+
+
+        static void findbruger()
+        {
+            
+                Int32 valg = 0;
+                string[] linie = File.ReadAllLines("c:\\filer\\database.dat");
+            Console.Clear();
+                Console.WriteLine("Hvilken type info søger du efter?");
+                Console.WriteLine("Tast 0 for Telefonnummer");
+                Console.WriteLine("Tast 1 for Navn");
+                Console.WriteLine("Tast 2 for Adresse");
+                Console.WriteLine("Tast 3 for Postnummer");
+                Console.WriteLine("Tast 4 for By");
+                Console.WriteLine("Tast 5 for Email");
+                valg = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Hvad søger du?");
+                string find = Console.ReadLine();
+
+
+
+                if (valg == 1 || valg == 2 || valg == 4)
+                {
+                    find = StorStart(find);
+                }
+                //Console.WriteLine(find);
+
+                int antal = 0;
+                foreach (string indhold in linie)
+                {
+                    string[] felt = indhold.Split(',');
+
+                    if (felt[valg].Contains(find))
+                    {
+                        Console.WriteLine(indhold);
+                        antal++;
+                    }
+
+
+                }
+                if (antal == 0)
+                {
+                    Console.WriteLine("ingen med det navn");
+                }
+
+                Console.ReadKey();
+
+            }
+            static string UppercaseFirst(string s)
+        {
+
+            return char.ToUpper(s[0]) + s.Substring(1);
+        }
+
+
+
+        static void NyBruger()
+        {
+            
+
+            string[] Ny_Bruger = new string[6];
+            int tæller = 0;
+            do
+            {
+                string[] brugere = File.ReadAllLines("c:\\filer\\Database.dat");
+               
+                string temp = "";
+                Console.SetCursorPosition(0, 3);
+                ClearLine();
+                string[] input_data = { "telefon nr", "navn", "adresse", "postnr", "by", "email" };
+                string instruktionsbesked = "Indtast venligst " + input_data[tæller];
+
+                Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (instruktionsbesked.Length / 2)) + "}", instruktionsbesked));
+                Console.SetCursorPosition(20, (tæller + 5));
+                temp = Console.ReadLine();
+                //Console.SetCursorPosition(40, (tæller + 5));
+                //Ny_Bruger[tæller] = Console.ReadLine();
+
+                //Test
+                double myNum;
+                if (tæller == 0)
+                {
+                    if (temp == "r" || temp == "R")
+                    {
+                        Menu();
+                    }
+
+                    for (int i = 0; i < 1; )
+                        
+                        
+                        if (Double.TryParse(temp, out myNum))
+                        {
+                            if (temp.Length != 8)
+                            {
+                                Console.SetCursorPosition(20, (tæller + 5));
+                                SletRestLinje();
+                                Console.SetCursorPosition(60, (tæller + 5));
+                                Console.Write("Ugyldigt telefon nr prøv igen");
+                                Console.SetCursorPosition(20, (tæller + 5));
+                                temp = Console.ReadLine();
+                            }
+
+
+                            else
+                            {
+
+                                foreach (string indhold in brugere)
+                                {
+                                    string[] felt = indhold.Split(',');
+
+                                    if (felt[0].Contains(temp) )
+                                    {
+                                        Console.SetCursorPosition(20, (tæller + 5));
+                                        SletRestLinje();
+                                        Console.SetCursorPosition(60, (tæller + 5));
+                                        Console.Write("Nummeret findes allerede i databasen");
+                                        Console.SetCursorPosition(20, (tæller + 5));
+                                        temp = Console.ReadLine();
+                                    }
+                                    else
+                                    {
+
+                                            Ny_Bruger[tæller] = temp;
+                                            Console.SetCursorPosition(60, (tæller + 5));
+                                            SletRestLinje();
+                                            Console.Write("Telefonnummer godkendt");
+                                            i++;
+                                     }
+                                                                    
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.SetCursorPosition(20, (tæller + 5));
+                            SletRestLinje();
+                            Console.SetCursorPosition(60, (tæller + 5));
+                            Console.Write("Ugyldigt telefon nr prøv igen");
+                            Console.SetCursorPosition(20, (tæller + 5));
+                            temp = Console.ReadLine();
+                        }
+                }
+
+                if (tæller ==1)
+                {
+                    Ny_Bruger[tæller] = StorStart(temp);
+                    Console.SetCursorPosition(60, (tæller + 5));
+                    Console.Write("Navn indtastet");
+
+                }
+
+                if (tæller ==2)
+                {
+                    Ny_Bruger[tæller] = StorStart(temp);
+                    Console.SetCursorPosition(60, (tæller + 5));
+                    Console.Write("adresse indtastet");
+                }
+
+                if (tæller ==3)
+                {
+                    for (int i = 0; i < 1;)
+                        if (Double.TryParse(temp, out myNum))
+                        {
+                            if (temp.Length != 4)
+                            {
+                                Console.SetCursorPosition(20, (tæller + 5));
+                                SletRestLinje();
+                                Console.SetCursorPosition(60, (tæller + 5));
+                                Console.Write("Ugyldigt post nr prøv igen");
+                                Console.SetCursorPosition(20, (tæller + 5));
+                                temp = Console.ReadLine();
+                            }
+
+                            else
+                            {
+                                Ny_Bruger[tæller] = temp;
+                                Console.SetCursorPosition(60, (tæller + 5));
+                                SletRestLinje();
+                                Console.Write("Postnummer godkendt");
+                                i++;
+
+                            }
+                        }
+                        else
+                        {
+                            Console.SetCursorPosition(20, (tæller + 5));
+                            SletRestLinje();
+                            Console.SetCursorPosition(60, (tæller + 5));
+                            Console.Write("Ugyldigt post nr prøv igen");
+                            Console.SetCursorPosition(20, (tæller + 5));
+                            temp = Console.ReadLine();
+                        }
+
+                }
+
+                if (tæller == 4)
+                {
+                    Ny_Bruger[tæller] = StorStart(temp);
+                    Console.SetCursorPosition(60, (tæller + 5));
+                    Console.Write("By indtastet"); 
+                }
+
+                if (tæller == 5)
+                {
+                    for (int i = 0; i < 1;)
+                    
+                        if (new EmailAddressAttribute().IsValid(temp))
+                        {
+                            Ny_Bruger[tæller] = temp;
+                            i++;
+                        }
+                        else
+                        {
+                            Console.SetCursorPosition(20, (tæller + 5));
+                            SletRestLinje();
+                            Console.SetCursorPosition(60, (tæller + 5));
+                            Console.Write("Ugyldigt email prøv igen");
+                            Console.SetCursorPosition(20, (tæller + 5));
+                            temp = Console.ReadLine();
+
+                        }
+
+                    
+
+
+                }
+                tæller++;
+            } while (tæller <= 5);
+
+            
+            string skrivning;
+            skrivning = "";
+
+            for (int element = 0; element <= 4; element++)
+            {
+                skrivning = skrivning + Ny_Bruger[element] + ",";
+            }
+            skrivning = skrivning + Ny_Bruger[5] + Environment.NewLine;
+
+
+            //få den til at læse fra input
+            
+            File.AppendAllText("C:\\filer\\Database.dat", skrivning, Encoding.Unicode);
+            
+
+        }
+
+        static void FindBruger()
+        {
+
+        }
+
+
+    }
+
+
+}
